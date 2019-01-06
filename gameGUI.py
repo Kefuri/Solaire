@@ -1,9 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
+import importlib
+from loginbackend import loginprocess
+
+#importlib.import_module('loginbackend.py')
 
 smallfont = ("Calibri", 8)
 mediumfont = ("Calibri", 10)
 largefont = ("Calibri", 12)
+titlefont = ("Calibri", 18)
 buttonfont = ("Calibri", 15)
 
 class SolaireGUI(tk.Tk):
@@ -19,7 +24,7 @@ class SolaireGUI(tk.Tk):
 
         self.frames = {}
 
-        for F in (LoginPage, MainMenu, PlayMenu, MenuSettings):
+        for F in (LoginPage, MainMenu, PlayMenu, RegisterPage, MenuSettings):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -39,7 +44,7 @@ class LoginPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        loginlabel = tk.Label(self, text="Login To Solaire!", font=largefont)
+        loginlabel = tk.Label(self, text="Login To Solaire!", font=titlefont)
         loginlabel.pack(pady=10, padx=10)
 
         usernamelabel = tk.Label(self, text="Username:", font=smallfont)
@@ -47,17 +52,54 @@ class LoginPage(tk.Frame):
         usernamebox = tk.Entry(self, width=15)
         usernamebox.pack(pady=10, padx=10)
 
+
         passwordlabel = tk.Label(self, text="Password:", font=smallfont)
         passwordlabel.pack()
         passwordbox = tk.Entry(self, show="*", width=15)
         passwordbox.pack(pady=10, padx=10)
 
-        loginbutton = ttk.Button(self, text="Log In!", command=lambda: controller.show_frame(MainMenu))
+
+        loginbutton = ttk.Button(self, text="Log In!", command=lambda: self.logincommand(controller, usernamebox.get(), passwordbox.get()))
         loginbutton.pack()
 
         exitbutton = ttk.Button(self, text="Exit", command=lambda: quit(self))
         exitbutton.pack()
 
+        registerlabel = tk.Label(self, text="New to Solaire?", font=largefont)
+        registerbutton = ttk.Button(self, text="Register!", command=lambda: controller.show_frame(RegisterPage))
+        registerlabel.pack()
+        registerbutton.pack()
+    def logincommand(self, controller, username, password):
+        if loginprocess(username, password) == True:
+            controller.show_frame(MainMenu)
+            
+class RegisterPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        registertitle = tk.Label(self, text="Sign Up to Solaire", font=titlefont)
+        registertitle.grid(row=0, column=0)
+
+        usernamelabel = tk.Label(self, text="Username:", font=smallfont)
+        usernamelabel.grid(row=1, column=0,)
+        usernamebox = tk.Entry(self, width=25)
+        usernamebox.grid(rowspan=2, column=0, pady=10, padx=10)
+
+        emailaddresslabel = tk.Label(self, text="Email Address:", font=smallfont)
+        emailaddresslabel.grid(row=4, column=0)
+        emailaddressbox = tk.Entry(self, width=25)
+        emailaddressbox.grid(row=5, column=0)
+
+        passwordlabel = tk.Label(self, text="Password:", font=smallfont)
+        passwordlabel.grid(row=7, column=0)
+        passwordbox = tk.Entry(self, show="*", width=25)
+        passwordbox.grid(row=8, column=0, pady=10, padx=10)
+
+        confirmpasswordlabel = tk.Label(self, text="Confirm Password:", font=smallfont)
+        confirmpasswordlabel.grid(row=9, column=0)
+        confirmpasswordbox = tk.Entry(self, show="*", width=25)
+        confirmpasswordbox.grid(row=10, column=0, pady=10, padx=10)
 
 class MainMenu(tk.Frame):
 
@@ -105,7 +147,8 @@ class MenuSettings(tk.Frame):
         settingstitle = tk.Label(self, text="Settings", font=largefont)
         settingstitle.grid(row=0, column=0)
 
-
+        settingsseparator = ttk.Separator(self, orient="vertical")
+        settingsseparator.grid(rowspan=10, column=1, sticky="ns")
 
 
 
