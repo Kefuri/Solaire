@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-import importlib
 from loginbackend import loginprocess, registeringprocess
-
-#importlib.import_module('loginbackend.py')
+from leaderboardbackend import fetchplayers
 
 smallfont = ("Calibri", 8)
 mediumfont = ("Calibri", 10)
@@ -24,7 +22,7 @@ class SolaireGUI(tk.Tk):
 
         self.frames = {}
 
-        for F in (LoginPage, MainMenu, PlayMenu, RegisterPage, MenuSettings):
+        for F in (LoginPage, MainMenu, PlayMenu, RegisterPage, MenuSettings, LeaderboardPage):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -144,7 +142,7 @@ class PlayMenu(tk.Frame):
         teambuilder.configure(width=60, height =7)
         teambuilder.grid(row=3, column=0, padx=20)
 
-        leaderboard = tk.Button(self, text="Leaderboard", font=buttonfont, command = None)
+        leaderboard = tk.Button(self, text="Leaderboard", font=buttonfont, command = lambda: controller.show_frame(LeaderboardPage))
         leaderboard.configure(width=60, height =7)
         leaderboard.grid(row=4, column=0, pady=20, padx=20)
 
@@ -155,8 +153,59 @@ class MenuSettings(tk.Frame):
         settingstitle = tk.Label(self, text="Settings", font=largefont)
         settingstitle.grid(row=0, column=0)
 
-        settingsseparator = ttk.Separator(self, orient="vertical")
-        settingsseparator.grid(rowspan=10, column=1, sticky="ns")
+        settingsseparator = ttk.Separator(self, orient="horizontal")
+        settingsseparator.grid(row=1, column=1, sticky='E')
+
+        label = tk.Label(self, text="Ur nan", font=smallfont)
+        label.grid(row=2, column =2)
+
+        testbutton = ttk.Button(self, text="Test", command = lambda: self.text_change())
+        testbutton.grid(row=10, column=10)
+
+        returnbutton = ttk.Button(self, text="Return to Main Menu", command=lambda: controller.show_frame(MainMenu))
+        returnbutton.grid(row=1, column=3)
+
+    def text_change(self):
+        label['text'] = "Now what?"
+
+
+class LeaderboardPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        tk.Frame.config(self, height = 200, width = 200)
+
+        returnbutton =  ttk.Button(self, text="Return to main menu",
+            command = lambda: controller.show_frame(MainMenu))
+        returnbutton.grid(row=0, column =0)
+
+        leaderboardtitle = ttk.Label(self, text="The Leaderboard", font=largefont)
+        leaderboardtitle.grid(row=0, column=1)
+
+        tempbutton = ttk.Button(self, text="Refresh!", command= lambda: self.displayrankings())
+        tempbutton.grid(row=0, column=3) #Runs the functions again to refresh the database
+        #in case of any new ELO gains.
+        self.displayrankings() #Runs the display to generate rankings
+
+    def displayrankings(self):
+        players = fetchplayers() #assigns the return value of the function to a variable
+        i = 0
+        for name, elo in players:
+            ttk.Label(self, text=f"{name}                    {elo}", font= largefont).grid(row=(1 + i), column=0)
+            i += 1 #Creates a label for each of the data entries in players
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
