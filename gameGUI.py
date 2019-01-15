@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import importlib
-from loginbackend import loginprocess
+from loginbackend import loginprocess, registeringprocess
 
 #importlib.import_module('loginbackend.py')
 
@@ -69,10 +69,10 @@ class LoginPage(tk.Frame):
         registerbutton = ttk.Button(self, text="Register!", command=lambda: controller.show_frame(RegisterPage))
         registerlabel.pack()
         registerbutton.pack()
-    def logincommand(self, controller, username, password):
-        if loginprocess(username, password) == True:
-            controller.show_frame(MainMenu)
-            
+    def logincommand(self, controller, username, password): #Lets the button run two functions
+        if loginprocess(username, password) == True: #Verifies whether the login was successful
+            controller.show_frame(MainMenu) #Pushes the program forward if bad login
+
 class RegisterPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -100,6 +100,14 @@ class RegisterPage(tk.Frame):
         confirmpasswordlabel.grid(row=9, column=0)
         confirmpasswordbox = tk.Entry(self, show="*", width=25)
         confirmpasswordbox.grid(row=10, column=0, pady=10, padx=10)
+
+        registerbutton = ttk.Button(self, text="Register now!", command=lambda: self.registercommand(controller, usernamebox.get(), emailaddressbox.get(), passwordbox.get(), confirmpasswordbox.get()))
+        registerbutton.grid(row=11)
+
+    def registercommand(self, controller, username, email, password, confirmpassword):
+        if registeringprocess(username, email, password, confirmpassword) == True:
+            controller.show_frame(MainMenu)
+
 
 class MainMenu(tk.Frame):
 
