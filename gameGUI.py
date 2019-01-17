@@ -24,13 +24,13 @@ class SolaireGUI(tk.Tk):
 
         self.frames = {}
 
-        for F in (LoginPage, MainMenu, PlayMenu, RegisterPage, MenuSettings, TeamBuilderPage, LeaderboardPage):
+        for F in (LoginPage, MainMenu, PlayMenu, RegisterPage, MenuSettings, TeamBuilderPage, LeaderboardPage, CreaturePage):
 
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky = "nsew")
 
-        self.show_frame(TeamBuilderPage)
+        self.show_frame(RegisterPage)
 
     def show_frame(self, cont):
 
@@ -52,12 +52,10 @@ class LoginPage(tk.Frame):
         usernamebox = tk.Entry(self, width=15)
         usernamebox.pack(pady=10, padx=10)
 
-
         passwordlabel = tk.Label(self, text="Password:", font=smallfont)
         passwordlabel.pack()
         passwordbox = tk.Entry(self, show="*", width=15)
         passwordbox.pack(pady=10, padx=10)
-
 
         loginbutton = ttk.Button(self, text="Log In!", command=lambda: self.logincommand(controller, usernamebox.get(), passwordbox.get()))
         loginbutton.pack()
@@ -71,7 +69,7 @@ class LoginPage(tk.Frame):
         registerbutton.pack()
     def logincommand(self, controller, username, password): #Lets the button run two functions
         if loginprocess(username, password) == True: #Verifies whether the login was successful
-            controller.show_frame(MainMenu) #Pushes the program forward if bad login
+            controller.show_frame(MainMenu) #Pushes the program forward if good login
 
 class RegisterPage(tk.Frame):
 
@@ -79,38 +77,36 @@ class RegisterPage(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         registertitle = tk.Label(self, text="Sign Up to Solaire", font=titlefont)
-        registertitle.grid(row=0, column=0)
+        registertitle.pack(pady=20)
 
         usernamelabel = tk.Label(self, text="Username:", font=smallfont)
-        usernamelabel.grid(row=1, column=0,)
+        usernamelabel.pack()
         usernamebox = tk.Entry(self, width=25)
-        usernamebox.grid(rowspan=2, column=0, pady=10, padx=10)
+        usernamebox.pack(pady=10, padx=10)
 
         emailaddresslabel = tk.Label(self, text="Email Address:", font=smallfont)
-        emailaddresslabel.grid(row=4, column=0)
+        emailaddresslabel.pack()
         emailaddressbox = tk.Entry(self, width=25)
-        emailaddressbox.grid(row=5, column=0)
+        emailaddressbox.pack(pady=10, padx=10)
 
         passwordlabel = tk.Label(self, text="Password:", font=smallfont)
-        passwordlabel.grid(row=7, column=0)
+        passwordlabel.pack()
         passwordbox = tk.Entry(self, show="*", width=25)
-        passwordbox.grid(row=8, column=0, pady=10, padx=10)
+        passwordbox.pack(pady=10, padx=10)
 
         confirmpasswordlabel = tk.Label(self, text="Confirm Password:", font=smallfont)
-        confirmpasswordlabel.grid(row=9, column=0)
+        confirmpasswordlabel.pack()
         confirmpasswordbox = tk.Entry(self, show="*", width=25)
-        confirmpasswordbox.grid(row=10, column=0, pady=10, padx=10)
+        confirmpasswordbox.pack(pady=10, padx=10)
 
         registerbutton = ttk.Button(self, text="Register now!", command=lambda: self.registercommand(controller, usernamebox.get(), emailaddressbox.get(), passwordbox.get(), confirmpasswordbox.get()))
-        registerbutton.grid(row=11)
-
+        registerbutton.pack()
     def registercommand(self, controller, username, email, password, confirmpassword):
         if registeringprocess(username, email, password, confirmpassword) == True:
             controller.show_frame(MainMenu)
 
 
 class MainMenu(tk.Frame):
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Solaire", font=largefont)
@@ -184,8 +180,20 @@ class LeaderboardPage(tk.Frame):
             ttk.Label(self, text=f"{i+1}. {name}                    {elo}", font= largefont).grid(row=(1 + i), column=1)
             i += 1 #Creates a label for each of the data entries in players
 
-
 class TeamBuilderPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        titlelabel = ttk.Label(self, text="Teambuilder", font=largefont)
+        titlelabel.pack(pady=20)
+
+        newteambutton = ttk.Button(self, text="Create a new team", command= lambda: self.show_frame(CreaturePage))
+        viewteambutton = ttk.Button(self, text="View your existing teams", command = lambda: self.show_frame(ExistingTeamsPage))
+
+        newteambutton.pack()
+        viewteambutton.pack(pady=20)
+
+class CreaturePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -198,35 +206,15 @@ class TeamBuilderPage(tk.Frame):
         self.choice1 = StringVar()
         self.choice1.set('Please Select...')
         self.choice1.trace('w', self.getchange1())
-
-        self.choice2 = StringVar()
-        self.choice2.set('Please Select...')
-        self.choice2.trace('w', self.getchange2())
-
-        self.choice3 = StringVar()
-        self.choice3.set('Please Select...')
-        self.choice3.trace('w', self.getchange3())
-
-        self.choice4 = StringVar()
-        self.choice4.set('Please Select...')
-        self.choice4.trace('w', self.getchange4())
-
         monster1entry = tk.OptionMenu(self, self.choice1, *choices)
         monster1entry.grid(row=1, column=1)
 
-        monster2entry = tk.OptionMenu(self, self.choice1, *choices)
-        monster2entry.grid(row=2, column=1)
-
     def getchange1(self):
         self.choice1.get()
-    def getchange2(self):
-        self.choice2.get()
-    def getchange3(self):
-        self.choice3.get()
-    def getchange4(self):
-        self.choice4.get()
 
-
+class ExistingTeamsPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
 
 
 
