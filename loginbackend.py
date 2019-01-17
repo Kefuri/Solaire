@@ -54,8 +54,11 @@ def registeringprocess(username, email, password, confirmpassword):
                 db.commit() #The data is only written to the database if all checks pass.
                 return True
             else:
+                print("Password Check Issue")
                 return False
         else:
+            print("Email Check Issue")
             return False
     else:
+        print("Username Check Issue")
         return False
