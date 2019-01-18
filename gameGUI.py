@@ -24,13 +24,13 @@ class SolaireGUI(tk.Tk):
 
         self.frames = {}
 
-        for F in (LoginPage, MainMenu, PlayMenu, RegisterPage, MenuSettings, TeamBuilderPage, LeaderboardPage, CreaturePage):
+        for F in (LoginPage, MainMenu, PlayMenu, RegisterPage, MenuSettings, TeamBuilderPage, LeaderboardPage, CreaturePage, ExistingTeamsPage):
 
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky = "nsew")
 
-        self.show_frame(RegisterPage)
+        self.show_frame(TeamBuilderPage)
 
     def show_frame(self, cont):
 
@@ -99,7 +99,8 @@ class RegisterPage(tk.Frame):
         confirmpasswordbox = tk.Entry(self, show="*", width=25)
         confirmpasswordbox.pack(pady=10, padx=10)
 
-        registerbutton = ttk.Button(self, text="Register now!", command=lambda: self.registercommand(controller, usernamebox.get(), emailaddressbox.get(), passwordbox.get(), confirmpasswordbox.get()))
+        registerbutton = ttk.Button(self, text="Register now!", command=lambda: self.registercommand(controller, usernamebox.get(), emailaddressbox.get(),
+         passwordbox.get(), confirmpasswordbox.get()))
         registerbutton.pack()
     def registercommand(self, controller, username, email, password, confirmpassword):
         if registeringprocess(username, email, password, confirmpassword) == True:
@@ -187,8 +188,11 @@ class TeamBuilderPage(tk.Frame):
         titlelabel = ttk.Label(self, text="Teambuilder", font=largefont)
         titlelabel.pack(pady=20)
 
-        newteambutton = ttk.Button(self, text="Create a new team", command= lambda: self.show_frame(CreaturePage))
-        viewteambutton = ttk.Button(self, text="View your existing teams", command = lambda: self.show_frame(ExistingTeamsPage))
+        divider = ttk.Separator(self, orient="horizontal")
+        divider.place(x=50, y=10)
+
+        newteambutton = ttk.Button(self, text="Create a new team", command= lambda: controller.show_frame(CreaturePage))
+        viewteambutton = ttk.Button(self, text="View your existing teams", command = lambda: controller.show_frame(ExistingTeamsPage))
 
         newteambutton.pack()
         viewteambutton.pack(pady=20)
@@ -215,6 +219,12 @@ class CreaturePage(tk.Frame):
 class ExistingTeamsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        titlelabel = ttk.Label(self, text = "Your Teams", font=largefont)
+        titlelabel.place(x=180, y=10)
+
+        team1label = ttk.Label(self, text = "Team One", font=mediumfont)
+        team1label.place(x=10, y=40)
 
 
 

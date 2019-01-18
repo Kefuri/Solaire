@@ -23,8 +23,13 @@ def usernamecheck(username): #Function to check for an existing username
     cursor.execute(findusername,[(username)])
     if cursor.fetchall():
         return False #If found, function is false and parent function stops
+    elif len(username) >= 6: #If not found, checks length of username
+        if username.find(' ') == -1: #attempts to locate any spaces in username
+            return True #if checks pass the function returns true
+        else:
+            return False
     else:
-        return True
+        return False
 
 def emailcheck(email):
     atcheck = email.find('@')
@@ -52,6 +57,7 @@ def registeringprocess(username, email, password, confirmpassword):
                 VALUES(?, ?, ?)'''
                 cursor.execute(insertData, [(username), (email), (password)])
                 db.commit() #The data is only written to the database if all checks pass.
+                print("Successful Register")
                 return True
             else:
                 print("Password Check Issue")
