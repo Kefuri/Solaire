@@ -1,21 +1,18 @@
-import sqlite3 as sql
-with sql.connect("Solaire.db") as db:
-    global cursor #cursor made global to use throughout all functions
-    cursor = db.cursor() #Establishes a cursor
+import dbconnections
+from dbconnections import cursor, db
 
 def loginprocess(username, password):
-    find_user = ("SELECT * FROM users WHERE username = ? AND password = ?") #Creates Query
-    cursor.execute(find_user,[(username),(password)]) #Executes Query with passed arguments
-    results = cursor.fetchall() #Puts result into a variable
-    print("Confirmation")
-    print(username)
-    print(password)
-    print(results) #Lines 10-13 are all for test data
-
-    if results:
+    find_user = ("SELECT userID FROM users WHERE username = ? AND password = ?") #Creates Query
+    try:
+        cursor.execute(find_user,[(username),(password)])
+        results = cursor.fetchone()[0]
+     #Puts result into a variable
         print("Success") #Tells console the check was successful as testing
+        global globalID
+        globalID = str(results)
+        print(globalID)
         return True
-    else:
+    except:
         return False #Booleans used to determine if the game should progress to the main menu
 
 def usernamecheck(username): #Function to check for an existing username
@@ -53,18 +50,17 @@ def registeringprocess(username, email, password, confirmpassword):
         if emailcheck(email):
             if passwordcheck(password, confirmpassword):
                 print(username, email, password) #test data
-                insertData = '''INSERT INTO users(username, emailaddress, password)
-                VALUES(?, ?, ?)'''
+                insertData = '''INSERT INTO users(username, emailaddress, password, ELO)
+                VALUES(?, ?, ?, 100)'''
                 cursor.execute(insertData, [(username), (email), (password)])
                 db.commit() #The data is only written to the database if all checks pass.
+                db.close()
                 print("Successful Register")
                 return True
             else:
-                print("Password Check Issue")
-                return False
+
+                return "Password Check Issue"
         else:
-            print("Email Check Issue")
-            return False
+            return "Email Check Issue"
     else:
-        print("Username Check Issue")
-        return False
+        return "Username Already Exists!"
